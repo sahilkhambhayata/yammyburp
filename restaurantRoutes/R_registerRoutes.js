@@ -25,7 +25,7 @@ Router.get('/rest/Search',restSearch)
 Router.get('/rest/getOrder',restgetOrder)
 Router.get('/get/restLocation',locationrest)
 Router.post('/sendEmailController',sendEmailController)
-Router.get('/get/YourImpect',YourImpect)
+
 
 
 module.exports = Router;

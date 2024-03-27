@@ -68,7 +68,7 @@ exports.YourImpect = async (req, res)=>{
 
           const order = await Order.find({userId,isDeleted: { $ne: true }}).lean();
 
-        const  totalamount = order.reduce((price)=> )
+        const totalAmount = order.reduce((total, order) => total + order.price, 0);
 
         if (!order) {
             return res.status(404).json({

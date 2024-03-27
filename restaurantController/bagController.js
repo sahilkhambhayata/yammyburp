@@ -8,7 +8,12 @@ exports.createBag = async (req, res) => {
     try {
         const bagData = req.body;
 
-        const bag = await Bag.create(bagData);
+        const prices = req.body.price;
+
+        const price = Math.round(prices);
+
+
+        const bag = await Bag.create({price , ...bagData});
 
         // Extract the collection time from the request body
         const collectionTime = bagData.collection_time;
