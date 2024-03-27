@@ -59,4 +59,46 @@ exports.getOrder = async (req, res) => {
         });
     }
 }
+
+
+exports.YourImpect = async (req, res)=>{
+    try {
+
+        const userId = req.query.user_id;
+
+          const order = await Order.find({userId,isDeleted: { $ne: true }}).lean();
+
+        const  totalamount = order.reduce((price)=> )
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: "that curent time not ordere created "
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Order listing successful",
+            data: order
+        });
+
+        
+
+        
+
+        res.status(200).json({
+            success:true,
+            message:"Data listing Successfully "
+        })
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success:false,
+            message:"Internal server error"
+        })
+        
+    }
+}
     

@@ -551,22 +551,3 @@ exports.sendEmailController = async(req, res) => {
         
     }
 }  
-
-exports.YourImpect = async (req, res)=>{
-    try {
-        
-
-        res.status(200).json({
-            success:true,
-            message:"Data listing Successfully "
-        })
-        
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({
-            success:false,
-            message:"Internal server error"
-        })
-        
-    }
-}
