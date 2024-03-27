@@ -6,53 +6,62 @@ const geolib = require('geolib');
 
 exports.createBag = async (req, res) => {
     try {
-        // Extract bag data from request body
         const bagData = req.body;
 
-        // Create a new bag record in the database
         const bag = await Bag.create(bagData);
 
         // Extract the collection time from the request body
         const collectionTime = bagData.collection_time;
 
+      
+
         // Extract the start and end times from the collection time
         const [startTime, endTime] = collectionTime.split(' - ');
 
-        // Calculate the duration in milliseconds between the start and end times
+        // Calculate the duration in milliseconds
         const duration = calculateDuration(startTime, endTime);
+        
+        console.log(duration,"duration");
 
-        // Schedule bag deletion after the specified duration
+        // Set a timeout to delete the bag after the specified duration
         setTimeout(async () => {
             try {
-                // Mark the bag as deleted
+
                 bag.isDeleted = true;
                 await bag.save();
-                console.log(`Bag with ID ${bag._id} deleted after collection time.`);
+                // await Bag.deleteOne({ _id: bag._id });
+                console.log(`Bag with ID ${bag._id} deleted after collection time`);
+
             } catch (error) {
                 console.error(`Error deleting bag with ID ${bag._id}:`, error);
+
             }
         }, duration);
 
-        // Respond with success message and bag data
         res.status(200).json({
             success: true,
-            message: "Bag created successfully",
+            message: "bag created successfully",
             data: bag
-        });
+        })
     } catch (err) {
-        // Handle errors
         console.log(err);
-        res.status(500).json({
+        res.status(400).json({
             success: false,
-            message: "Internal server error"
+            message: "internal server error"
         });
     }
-};
+}
 
 function calculateDuration(startTime, endTime) {
-    const startTimestamp = new Date(startTime).getTime();
-    const endTimestamp = new Date(endTime).getTime();
-    return endTimestamp - startTimestamp;
+
+
+    const [startHours, startMinutes] = startTime.split(':').map(Number);
+    const [endHours, endMinutes] = endTime.split(':').map(Number);
+
+    const startMilliseconds = (startHours * 60 + startMinutes) * 60 * 1000;
+    const endMilliseconds = (endHours * 60 + endMinutes) * 60 * 1000;
+
+    return endMilliseconds - startMilliseconds;
 }
 exports.getBag = async (req, res) => {
     try {
@@ -298,3 +307,54 @@ exports.bagrestsearch = async(req , res)=>{
             });
         }
 }
+
+// exports.createBag = async (req, res) => {
+//     try {
+//         // Extract bag data from request body
+//         const bagData = req.body;
+
+//         // Create a new bag record in the database
+//         const bag = await Bag.create(bagData);
+
+//         // Extract the collection time from the request body
+//         const collectionTime = bagData.collection_time;
+
+//         // Extract the start and end times from the collection time
+//         const [startTime, endTime] = collectionTime.split(' - ');
+
+//         // Calculate the duration in milliseconds between the start and end times
+//         const duration = calculateDuration(startTime, endTime);
+
+//         // Schedule bag deletion after the specified duration
+//         setTimeout(async () => {
+//             try {
+//                 // Mark the bag as deleted
+//                 bag.isDeleted = true;
+//                 await bag.save();
+//                 console.log(`Bag with ID ${bag._id} deleted after collection time.`);
+//             } catch (error) {
+//                 console.error(`Error deleting bag with ID ${bag._id}:`, error);
+//             }
+//         }, duration);
+
+//         // Respond with success message and bag data
+//         res.status(200).json({
+//             success: true,
+//             message: "Bag created successfully",
+//             data: bag
+//         });
+//     } catch (err) {
+//         // Handle errors
+//         console.log(err);
+//         res.status(500).json({
+//             success: false,
+//             message: "Internal server error"
+//         });
+//     }
+// };
+
+// function calculateDuration(startTime, endTime) {
+//     const startTimestamp = new Date(startTime).getTime();
+//     const endTimestamp = new Date(endTime).getTime();
+//     return endTimestamp - startTimestamp;
+// }
