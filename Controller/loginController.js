@@ -96,7 +96,7 @@ exports.verifyOTPAndRegister = async (req, res) => {
             await user.save();
         }
 
-        res.json({ message: 'User registered successfully' });
+        res.status(200).json({ success:true, message: 'User registered successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -127,25 +127,34 @@ exports.sentotp = async (req, res) => {
         console.log("Generated OTP for Forget Password:", generatedOTP);
         console.log("OTP Expiration:", expirationTime);
 
-        try {
-            const testMessage = await testTwilioClient.messages.create({
-                body: `Your OTP for password reset is ${generatedOTP}`,
-                to: phonenumber,
-                from: process.env.TWILIO_NUMBER
-            });
-            console.log('Forget Password OTP sent successfully:', testMessage.sid);
-        } catch (testTwilioError) {
-            console.error('Forget Password OTP Twilio error:', testTwilioError);
-        }
+        // try {
+        //     const testMessage = await testTwilioClient.messages.create({
+        //         body: `Your OTP for password reset is ${generatedOTP}`,
+        //         to: phonenumber,
+        //         from: process.env.TWILIO_NUMBER
+        //     });
+        //     console.log('Forget Password OTP sent successfully:', testMessage.sid);
+        // } catch (testTwilioError) {
+        //     console.error('Forget Password OTP Twilio error:', testTwilioError);
+        // }
+
+
 
         await user.save(); 
+
+        res.status(200).json({
+            success:true,
+            message:"otp sent succesfully :)",
+            otp:generatedOTP
+    
+        })
 
         setTimeout(async () => {
             await U_login.findOneAndUpdate({ phonenumber }, { $unset: { resetPasswordOTP: 1, resetPasswordExpiration: 1 } });
             console.log('Forget Password OTP deleted after 2 minutes');
         }, 2 * 60 * 1000);
 
-        res.json({ message: 'Forget Password OTP sent successfully. Use this OTP to reset your password.' });
+       
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
