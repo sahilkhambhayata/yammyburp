@@ -4,21 +4,21 @@ const jwt = require('jsonwebtoken');
 const otpGenerator = require('otp-generator');
 
 const userSchema = mongoose.Schema({
-    
+
     phonenumber: {
         type: String,
         required: true,
         unique: true
     },
-    isRegistered:{
+    isRegistered: {
         type: Boolean,
         default: false
     },
     name: {
         type: String,
     },
-    Image:{
-        type: String, 
+    Image: {
+        type: String,
     },
     email: {
         type: String,
@@ -39,6 +39,12 @@ const userSchema = mongoose.Schema({
     },
     address: {
         type: String
+    },
+    age: {
+        type: Number 
+    },
+    dob: {
+        type: Date
     },
     city: {
         type: String
@@ -70,7 +76,7 @@ const userSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
-},{timestamps: true});
+}, { timestamps: true });
 
 
 
@@ -82,7 +88,7 @@ userSchema.pre('save', async function (next) {
 
     // Generate and store JWT token
     const token = jwt.sign({ userId: this._id }, process.env.SECRET_KEY);
-console.log("🚀 ~ token:", token)
+    console.log("🚀 ~ token:", token)
     this.jwt_token = token;
 
     next();

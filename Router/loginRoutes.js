@@ -78,7 +78,7 @@ Router.post('/resetPassword-with-otp',resetPassword)
 Router.post('/update/location',updateLocation)
 Router.post('/user-login',Loginuser)
 Router.post('/user-logout',logoutuser)
-Router.post('/get-SignalUsers',getSignalUsers)
+Router.get('/get-SigalUsers',getSignalUsers)
 Router.post('/sentotp',sentotp)
 
 

@@ -134,9 +134,9 @@ exports.getBag = async (req, res) => {
 
 exports.getsinglebag = async (req, res) => {
     try {
-        const bag_id = req.body.bag_id;
+        const bag_id = req.query.bag_id;
 
-        const userId = req.body.userId;
+        const userId = req.query.userId;
 
         const othersbugslimit = req.query.othersbugslimit || 4 ;
         
